@@ -1,0 +1,36 @@
+# Projet-IA
+import lejos.hardware.ev3.LocalEV3;
+import lejos.hardware.port.Port;
+import lejos.hardware.sensor.EV3UltrasonicSensor;
+import lejos.hardware.sensor.SensorModes;
+import lejos.robotics.SampleProvider;
+
+public class Ultrasonic {
+
+	private EV3UltrasonicSensor usSensor;
+	private Port port;
+
+	public Ultrasonic(Port sensorPort) {
+		port=sensorPort;
+		usSensor = new EV3UltrasonicSensor(sensorPort);
+	}
+  
+  
+  
+  
+
+	// Get an instance of the Ultrasonic EV3 sensor
+	SensorModes sensor = new EV3UltrasonicSensor(port);
+
+	// get an instance of this sensor in measurement mode
+	SampleProvider distance= sensor.getMode("Distance");
+
+	float[] sample = new float[distance.sampleSize()];
+	
+
+	while(true) {
+		distance.fetchSample(sample, 0);
+	}
+	
+}
+
