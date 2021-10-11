@@ -1,0 +1,27 @@
+# Projet-IA
+import lejos.hardware.motor.EV3MediumRegulatedMotor;
+import lejos.hardware.port.Port;
+import lejos.utility.Delay;
+
+public class Pince {
+
+	public EV3MediumRegulatedMotor m;
+
+	//private final static int SPEED = 100;
+
+
+	public Pince(Port port) {
+		m = new EV3MediumRegulatedMotor(port);
+		m.setSpeed(1080);
+	}
+
+	public void Open() {
+		m.forward();
+		Delay.msDelay(500);
+	}
+	
+	public void Close() {
+		m.backward();
+		Delay.msDelay(500);
+	}
+}
