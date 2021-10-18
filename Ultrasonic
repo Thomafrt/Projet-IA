@@ -36,6 +36,17 @@ public class Ultrasonic {
 			return sample[0];
 		}
 	}
+	
+	public float[] rechercheDistance() {
+		float [] tab = new float [1];
+		for (int i =0 ; i<   100     ; i++ ) {
+			Delay.msDelay(100);
+			tab[i]=getDistance();
+			tab=Arrays.copyOf(tab, tab.length+1);
+			System.out.println(tab[i]);
+		}
+		return tab;
+	}
 }
 
 
