@@ -1,13 +1,14 @@
-# Projet-IA
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.Port;
+import lejos.utility.Delay;
 
 public class DifferentialDrive {
 
 	private EV3LargeRegulatedMotor mLeftMotor;
 	private EV3LargeRegulatedMotor mRightMotor;
 
-	private final static int SPEED = 100;
+	private final static int SPEED = 500;
+
 
 
 	public DifferentialDrive (Port left_port, Port right_port){
@@ -19,30 +20,45 @@ public class DifferentialDrive {
 	}
 
 
-	public void forward()
-	{
+	public void forward(){
 		mLeftMotor.forward();
 		mRightMotor.forward();
 	}
 
-
-	public void stop()
-	{
+	public void stop(){
 		mLeftMotor.stop();
 		mRightMotor.stop();
+
 	}
 
 
-	public void rotateClockwise()
-	{
+	public void rotateClockwise(){
 		mLeftMotor.forward();
 		mRightMotor.backward();
 	}
 
 
-	public void rotateCounterClockwise()
-	{
+	public void rotateCounterClockwise(){
 		mLeftMotor.backward();
 		mRightMotor.forward();
 	}
+
+	public void demiTour() {
+		mLeftMotor.rotate(790,true);
+		mRightMotor.rotate(-790,true);
+
+	}
+	
+	public void pivote(int a) {
+		int b=a/2;
+		mLeftMotor.rotate(b,true);
+		mRightMotor.rotate(-b,true);
+	}
+	
+	public boolean isMoving() {
+		if(this.mLeftMotor.isMoving()==true && this.mRightMotor.isMoving()==true)
+			return true;
+		return false;
+	}
+	
 }
