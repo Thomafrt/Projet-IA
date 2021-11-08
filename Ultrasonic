@@ -1,11 +1,15 @@
-# Projet-IA
+import java.util.Arrays;
+
 import lejos.hardware.ev3.LocalEV3;
+import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.Port;
+import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.hardware.sensor.SensorModes;
 import lejos.robotics.SampleProvider;
+import lejos.utility.Delay;
 
-public class Ultrasonic {
+public class Ultrasonic{
 
 	private SensorModes sensor;
 	private Port port;
@@ -27,26 +31,18 @@ public class Ultrasonic {
 		// Ask the SampleProvider how long the array should be
 		sample = new float[distance.sampleSize()];
 	}
-	
-	
+
+
 	public float getDistance() {
 		while(true) {
 			distance.fetchSample(sample, 0);
-
 			return sample[0];
 		}
 	}
-	
-	public float[] rechercheDistance() {
-		float [] tab = new float [1];
-		for (int i =0 ; i<   100     ; i++ ) {
-			Delay.msDelay(100);
-			tab[i]=getDistance();
-			tab=Arrays.copyOf(tab, tab.length+1);
-			System.out.println(tab[i]);
-		}
-		return tab;
-	}
+
+
 }
+
+
 
 
