@@ -17,11 +17,11 @@ public class Pince {
 
 	public void Open() {
 		m.forward();
-		Delay.msDelay(500);
+		Delay.msDelay(100);
 	}
 	
 	public void Close() {
 		m.backward();
-		Delay.msDelay(500);
+		Delay.msDelay(100);
 	}
 }
