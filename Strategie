@@ -95,17 +95,29 @@ public class Strategie{
 		//le robot avance vers l'objet détecté, si c'est un palet il lattrappe se remet face au but adverse
 		//sinon repasse en mode detection
 
-		while (! t.isPressed() && uS.getDistance()>0.3){ //tant que le touch nest pas touché et que la distance<0.3
+		List <Float> liste= new ArrayList<Float> ();
+
+		while(uS.getDistance()>0.3) { //tant qu'on ne detetecte pas de mur
 			m.forward();
+			while(m.isMoving()==true) {//tant que le demi tour n'est pas fini
+				float i = uS.getDistance();
+				liste.add(i);
+				
+				float val1=liste.get(liste.size());
+				float val2=liste.get(liste.size()-1);
+				if(val1-val2>0) { // on détecte un palet
+					if (t.isPressed()){//si le touch est touché
+						m.stop();
+						p.close();
+					}
+				}
+			}
 		}
-		m.stop();
-		
-
-
-
-
+		m.stop(); //sinon on s'arrete et on repasse en detection
+		detecte();
 	}
-
+	
+	
 	public void vaMarquer() { // amène le palet derriere la ligne, puis se replace au centre du plateau
 
 	}
