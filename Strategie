@@ -13,13 +13,15 @@ public class Strategie{
 	Ultrasonic uS;
 	Pince p;
 	ColorSensor c;
+	private int angle;
 
 	public Strategie() {
-		t = new TouchSensor(SensorPort.S4);
+		//t = new TouchSensor(SensorPort.S4);
 		m = new DifferentialDrive(MotorPort.A,MotorPort.B);
 		uS = new Ultrasonic(SensorPort.S2);
-		p = new Pince (MotorPort.C);
-		c = new ColorSensor(SensorPort.S1);
+		//p = new Pince (MotorPort.C);
+		//c = new ColorSensor(SensorPort.S1);
+		angle=0;
 
 	}
 
@@ -48,46 +50,74 @@ public class Strategie{
 		if(uS.getDistance()>30) { //si la distance est inférieur à 30, cest un obstabcle a éviter
 			m.stop();
 			m.rotateClockwise();
-
 		}
 	}
 
-	public void detecte() { // le robot fait un tour sur lui même pour detecter le palet le plus proche et se place devant
+	public void detecte() { // le robot fait un tour sur lui même pour detecter le palet le plus proche et se place face à lui
 
 		System.out.println("Mode : Detection de palet");
 
 		List <Float> liste= new ArrayList<Float> ();
-		
+
 		m.demiTour();
+
 		while(m.isMoving()==true) {//tant que le demi tour n'est pas fini
 			float i = uS.getDistance();
 			liste.add(i);
+			Delay.msDelay(5);
 			//System.out.println(i);
 		}
-		
-	//TODO ervoir cette methode
+
 		int indice=0;
 		float val=1000;
 		for(int i=0; i<liste.size();i++) { // tant qu'on a pas parcouru toute la liste
 			if(liste.get(i)>0.3 && liste.get(i)<val) { //si lindice i est inf à 0.3 et inf à val
-					val=liste.get(i);
-					indice=i;
-					Delay.msDelay(500);
+				val=liste.get(i);
+				indice=i;
 			}
 		}
-		System.out.print(liste.size());
-		Delay.msDelay(5000);
-		int angle=(int) (360/liste.size()*4.3*1000*indice);
-		
+		angle=(int) (1050/liste.size()*indice);
+
+		System.out.println("angle1 : "+angle);
+
+		if ( angle < 820)
+			angle=-1640+angle+820;
 		m.pivote(angle);
+
+		System.out.println("angle2 : "+angle);
+		//System.out.println(indice);
+		//System.out.println(val);
+		//System.out.println(liste.size());
+		Delay.msDelay(5000);
 	}
 
-	
+	public void vaChercher() {
+		//le robot avance vers l'objet détecté, si c'est un palet il lattrappe se remet face au but adverse
+		//sinon repasse en mode detection
+
+		while (! t.isPressed() && uS.getDistance()>0.3){ //tant que le touch nest pas touché et que la distance<0.3
+			m.forward();
+		}
+		m.stop();
+		
+
+
+
+
+	}
+
+	public void vaMarquer() { // amène le palet derriere la ligne, puis se replace au centre du plateau
+
+	}
+
 
 	public static void main(String[] args) {
 		Strategie s=new Strategie();
-
+		//DifferentialDrive m2 = new DifferentialDrive(MotorPort.A,MotorPort.B);
 		s.detecte();
+		//m2.demiTour();
+
+
 	}
 
 }
