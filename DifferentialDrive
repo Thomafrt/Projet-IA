@@ -25,6 +25,14 @@ public class DifferentialDrive {
 		mRightMotor.forward();
 	}
 
+	public void recule() {
+		mLeftMotor.backward();
+		mRightMotor.backward();
+		Delay.msDelay(3000);
+		stop();
+	}
+	
+	
 	public void stop(){
 		mLeftMotor.stop();
 		mRightMotor.stop();
