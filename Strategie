@@ -64,6 +64,8 @@ public class Strategie{
 			m.rotateClockwise();
 		}
 	}*/
+	
+	
 
 	public void detecte() { // le robot fait un tour sur lui même pour detecter le palet le plus proche et se place face à lui
 
@@ -83,9 +85,14 @@ public class Strategie{
 		int indice=0;
 		float val=1000;
 		for(int i=0; i<liste.size();i++) { // tant qu'on a pas parcouru toute la liste
-			if(liste.get(i)>0.3 && liste.get(i)<val) { //si lindice i est supp à 0.3 et inf à val
-				val=liste.get(i);
-				indice=i;
+			if (i != (liste.size()-1)) {
+				float dist=liste.get(i)-liste.get(i+1);
+				if (dist<-3 || dist>3) {
+					if(liste.get(i)>0.3 && liste.get(i)<val) { //si lindice i est supp à 0.3 et inf à val
+						val=liste.get(i);
+						indice=i;
+					}
+				}
 			}
 		}
 		angle=(int) (1050/liste.size()*indice);
@@ -101,7 +108,9 @@ public class Strategie{
 
 		vaChercher();
 	}
-
+	
+	
+	
 	public void vaChercher() {
 		//le robot avance vers l'objet détecté, si c'est un palet il lattrappe se remet face au but adverse
 		//sinon repasse en mode detection
