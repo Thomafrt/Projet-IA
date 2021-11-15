@@ -118,8 +118,22 @@ public class Strategie{
 	}
 	
 	
-	public void vaMarquer() { // amène le palet derriere la ligne, puis se replace au centre du plateau
-
+		public void vaMarquer() { // amène le palet derriere la ligne, puis se replace au centre du plateau et recherche un palet
+        int tourne=1600-angle;
+		m.pivote(tourne);
+		m.forward();
+		if (c.getColorID()==6) { //si la couleur détecté est le blanc (6), i=1 donc on sort de la boucle
+			m.stop();
+			p.open();
+		}
+		apres();
+	}
+	
+	
+	
+	public void apres() { //se replace au centre du plateau et recherche un palet
+	    m.recule();
+   	    detecte();		
 	}
 
 
