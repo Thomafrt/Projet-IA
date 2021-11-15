@@ -16,18 +16,18 @@ public class Strategie{
 	private int angle;
 
 	public Strategie() {
-		//t = new TouchSensor(SensorPort.S4);
+	t = new TouchSensor(SensorPort.S4);
 		m = new DifferentialDrive(MotorPort.A,MotorPort.B);
 		uS = new Ultrasonic(SensorPort.S2);
-		//p = new Pince (MotorPort.C);
-		//c = new ColorSensor(SensorPort.S1);
+		p = new Pince (MotorPort.C);
+		c = new ColorSensor(SensorPort.S1);
 		angle=0;
 
 	}
 
 	public void premierPalet() { //avance et recupere un palet et le met derriere la ligne blanche
-
-		System.out.println("Recherche du premier palet");
+		p.open();
+		System.out.println("Mode : Recherche du premier palet");
 
 		int i=0;
 		while(i<1) { //tant que i inférieur à 1
@@ -35,27 +35,39 @@ public class Strategie{
 				m.forward();
 			}
 			m.stop();
-			p.Close();
-			m.forward();
-			if (c.getColorID()==6) { //si la couleur détecté est le blanc (6), i=1 donc on sort de la boucle
+			Delay.msDelay(1000);
+			p.close();
+			Delay.msDelay(1000);
+			System.out.println("Mode : Ramene le premier palet");
+			/*m.forward();
+			if (c.getColorID()== 6) { //si la couleur détecté est le blanc (6) (|| uS.getDistance()<0.3), i=1 donc on sort de la boucle
+				System.out.println("couleur ligne");
 				m.stop();
-				p.Open();
+				p.open();
 				i=1;
+			}*/
+			while(c.getColorID()!= 6) {
+				m.forward();
 			}
+			m.stop();
+			p.open();
+			i=1;
+
 		}
+		apres();
 	}
 
 
-	public void esquive() { //esquive un obstacle
+	/*public void esquive() { //esquive un obstacle
 		if(uS.getDistance()>30) { //si la distance est inférieur à 30, cest un obstabcle a éviter
 			m.stop();
 			m.rotateClockwise();
 		}
-	}
+	}*/
 
 	public void detecte() { // le robot fait un tour sur lui même pour detecter le palet le plus proche et se place face à lui
 
-		System.out.println("Mode : Detection de palet");
+		System.out.println("Mode : Detection du palet le plus proche");
 
 		List <Float> liste= new ArrayList<Float> ();
 
@@ -71,55 +83,57 @@ public class Strategie{
 		int indice=0;
 		float val=1000;
 		for(int i=0; i<liste.size();i++) { // tant qu'on a pas parcouru toute la liste
-			if(liste.get(i)>0.3 && liste.get(i)<val) { //si lindice i est inf à 0.3 et inf à val
+			if(liste.get(i)>0.3 && liste.get(i)<val) { //si lindice i est supp à 0.3 et inf à val
 				val=liste.get(i);
 				indice=i;
 			}
 		}
 		angle=(int) (1050/liste.size()*indice);
 
-		System.out.println("angle1 : "+angle);
+		//System.out.println("angle1 : "+angle);
 
 		if ( angle < 820)
 			angle=-1640+angle+820;
 		m.pivote(angle);
 
-		System.out.println("angle2 : "+angle);
-		//System.out.println(indice);
-		//System.out.println(val);
-		//System.out.println(liste.size());
+		//System.out.println("angle2 : "+angle);
 		Delay.msDelay(5000);
+
+		vaChercher();
 	}
 
 	public void vaChercher() {
 		//le robot avance vers l'objet détecté, si c'est un palet il lattrappe se remet face au but adverse
 		//sinon repasse en mode detection
+		System.out.println("Mode : Cherche le palet");
 
 		List <Float> liste= new ArrayList<Float> ();
-
+		float v=0;
+		liste.add(v);
 		while(uS.getDistance()>0.3) { //tant qu'on ne detetecte pas de mur
 			m.forward();
 			while(m.isMoving()==true) {//tant que le demi tour n'est pas fini
 				float i = uS.getDistance();
 				liste.add(i);
-				
-				float val1=liste.get(liste.size());
-				float val2=liste.get(liste.size()-1);
+				float val1=liste.get(liste.size()-1);
+				float val2=liste.get(liste.size()-2);
 				if(val1-val2>0) { // on détecte un palet
 					if (t.isPressed()){//si le touch est touché
 						m.stop();
 						p.close();
 					}
 				}
+				else {
+					m.stop(); //sinon on s'arrete et on repasse en detection
+					detecte();
+				}
 			}
 		}
-		m.stop(); //sinon on s'arrete et on repasse en detection
-		detecte();
 	}
-	
-	
-		public void vaMarquer() { // amène le palet derriere la ligne, puis se replace au centre du plateau et recherche un palet
-        int tourne=1600-angle;
+
+	public void vaMarquer() { // amène le palet derriere la ligne, puis se replace au centre du plateau et recherche un palet
+		System.out.println("Mode : Marquer un but");
+		int tourne=1600-angle;
 		m.pivote(tourne);
 		m.forward();
 		if (c.getColorID()==6) { //si la couleur détecté est le blanc (6), i=1 donc on sort de la boucle
@@ -128,20 +142,27 @@ public class Strategie{
 		}
 		apres();
 	}
-	
-	
-	
+
 	public void apres() { //se replace au centre du plateau et recherche un palet
-	    m.recule();
-   	    detecte();		
+		m.recule();
+		detecte();		
+	}
+	public void run() {
+		//init
+		//wait for anypress
 	}
 
 
 	public static void main(String[] args) {
 		Strategie s=new Strategie();
+		s.premierPalet();
+		//Pince p = new Pince (MotorPort.C);
+		//p.open();
 		//DifferentialDrive m2 = new DifferentialDrive(MotorPort.A,MotorPort.B);
-		s.detecte();
+		//s.detecte();
+		//s.vaChercher();
 		//m2.demiTour();
+
 
 
 	}
