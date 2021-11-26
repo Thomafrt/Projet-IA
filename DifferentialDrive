@@ -5,10 +5,10 @@ import lejos.utility.Delay;
 
 public class DifferentialDrive {
 
-	private EV3LargeRegulatedMotor mLeftMotor;
-	private EV3LargeRegulatedMotor mRightMotor;
+	public EV3LargeRegulatedMotor mLeftMotor;
+	public EV3LargeRegulatedMotor mRightMotor;
 
-	private final static int SPEED = 250;
+	private final static int SPEED = 500;
 
 
 
@@ -20,7 +20,6 @@ public class DifferentialDrive {
 
 
 	public void forward(){ //fait avancer la robot
-
 		mLeftMotor.setSpeed(SPEED);
 		mRightMotor.setSpeed(SPEED);
 		
@@ -29,6 +28,7 @@ public class DifferentialDrive {
 	}
 
 	public void stop(){ //arrête le robot
+		System.out.println("stop");
 		mLeftMotor.rotate(0,true);
 		mRightMotor.rotate(0,true);
 
@@ -47,19 +47,14 @@ public class DifferentialDrive {
 	}
 
 	public void demiTour() { //le robot fait une rotation à 180degres
-		mLeftMotor.setSpeed(250);
-		mRightMotor.setSpeed(250);
-		
-		mLeftMotor.rotate(790,true);
-		mRightMotor.rotate(-790,true);
+		System.out.println("tour sur lui meme");	
+		mLeftMotor.rotate(810,true);
+		mRightMotor.rotate(-810,true);
 
 	}
 
 	public void pivote(int a) {
 		// le robot effectue une rotation par la droite de a degres
-		mLeftMotor.setSpeed(250);
-		mRightMotor.setSpeed(250);
-		int b=a/2;
 		mLeftMotor.rotate(a,true);
 		mRightMotor.rotate(-a,true);
 	}
@@ -73,7 +68,6 @@ public class DifferentialDrive {
 	public void recule() { //le robot recule pendant un certain temps (delay à modifier)
 		mLeftMotor.setSpeed(SPEED);
 		mRightMotor.setSpeed(SPEED);
-		
 		mLeftMotor.backward();
 		mRightMotor.backward();
 		Delay.msDelay(3000);
@@ -82,20 +76,12 @@ public class DifferentialDrive {
 
 	public void esquive() { //esquive un obstacle
 		//stop();
+		System.out.println("esquive");
 		pivote(100);
 		Delay.msDelay(1000);
 		forward();
 		Delay.msDelay(2000);
 		pivote(-80);
-		Delay.msDelay(1000);
-	}
-	
-	
-	public static void main(String[] args) {
-		DifferentialDrive m = new DifferentialDrive(MotorPort.A,MotorPort.B);
-		//m.demiTour();
-		//m.pivote(790);
-		Delay.msDelay(6000);
 	}
 }
 
