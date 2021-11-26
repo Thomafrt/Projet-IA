@@ -33,6 +33,7 @@ public class Strategie{
 			Delay.msDelay(1000);
 			while (! t.isPressed()){ //tant que le touch nest pas touché
 				m.forward();
+				System.out.println("cherche palet");
 			}
 			m.stop();
 			Delay.msDelay(1000);
@@ -44,6 +45,7 @@ public class Strategie{
 
 			while(c.getColorID()!= 6) { //tant qu'on ne détecte pas de blanc
 				m.forward();
+				System.out.println("blanc");
 			}
 			m.stop();
 			p.open();
@@ -53,35 +55,38 @@ public class Strategie{
 	}
 
 	public void detecte() { //le robot fait un tour sur lui même pour detecter le palet le plus proche et se place face à lui
-
 		System.out.println("Mode : Detection du palet le plus proche");
 		List <Float> liste= new ArrayList<Float> ();
 		m.demiTour();
+
 		while(m.isMoving()==true) { //tant que le demi tour n'est pas fini
 			float i = uS.getDistance();
 			liste.add(i);
-			Delay.msDelay(1);
+			Delay.msDelay(10);
 			//System.out.println(i);
 		}
+
 		int indice=0;
 		float val=1000;
-		for(int i=0; i<liste.size()-1;i++) { //tant qu'on a pas parcouru toute la liste
 
+		for(int i=0; i<liste.size()-1;i++) { //tant qu'on a pas parcouru toute la liste
 			float diff=liste.get(i)-liste.get(i+1);
 
 			if (liste.get(i)>0.35 && liste.get(i)<val) { //si l'indice i est supp à 0.3 ET inférieur à val et pas de val infini
-				val=liste.get(i);																	// et que la diff ? && (diff>0.2 || diff<-0.2) et  && i != Float.POSITIVE_INFINITY
+				val=liste.get(i);						         // et que la diff ? && (diff>0.2 || diff<-0.2) et  && i != Float.POSITIVE_INFINITY
 				indice=i;
 			}
 		}
 		angle=(int) (1050/liste.size()*indice);
-		//if ( angle < 820)
-			//angle=-1640+angle+820;
+
 		m.pivote(angle);
 		Delay.msDelay(3000);
+		System.out.println("angle :"+angle);
+		System.out.println("valeur :"+val);
+		System.out.println("liste :"+liste.size());
 
-		vaChercher();
-		Delay.msDelay(1000);
+		//vaChercher();
+		Delay.msDelay(10000);
 	}
 
 	public void vaChercher() {
@@ -113,7 +118,7 @@ public class Strategie{
 			else {
 				m.stop(); //sinon on s'arrete et on s'écarte et repasse en detection
 				Delay.msDelay(5000);
-				
+
 				apres();
 			}
 		}
@@ -133,6 +138,7 @@ public class Strategie{
 	}
 
 	public void apres() { //se replace au centre du plateau et recherche un palet
+		System.out.println("apres");
 		m.recule();
 		p.close();
 		detecte();		
@@ -144,12 +150,17 @@ public class Strategie{
 		premierPalet();
 	}
 
+	public void izi() {
+		p.open();
+		p.close();
+	}
+
 
 	public static void main(String[] args) {
 		Strategie s=new Strategie();
 		//s.premierPalet();
+		//s.izi();
 		//s.run();
-
 		//Pince p = new Pince (MotorPort.C);
 		//p.close();
 		//DifferentialDrive m2 = new DifferentialDrive(MotorPort.A,MotorPort.B);
