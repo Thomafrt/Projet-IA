@@ -1,4 +1,5 @@
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.Port;
 import lejos.utility.Delay;
 
@@ -7,7 +8,7 @@ public class DifferentialDrive {
 	private EV3LargeRegulatedMotor mLeftMotor;
 	private EV3LargeRegulatedMotor mRightMotor;
 
-	private final static int SPEED = 500;
+	private final static int SPEED = 250;
 
 
 
@@ -15,58 +16,86 @@ public class DifferentialDrive {
 		mLeftMotor = new EV3LargeRegulatedMotor(left_port);
 		mRightMotor = new EV3LargeRegulatedMotor(right_port);
 
-		mLeftMotor.setSpeed(SPEED);
-		mRightMotor.setSpeed(SPEED);
 	}
 
 
-	public void forward(){
+	public void forward(){ //fait avancer la robot
+
+		mLeftMotor.setSpeed(SPEED);
+		mRightMotor.setSpeed(SPEED);
+		
 		mLeftMotor.forward();
 		mRightMotor.forward();
 	}
 
-	public void recule() {
+	public void stop(){ //arrête le robot
+		mLeftMotor.rotate(0,true);
+		mRightMotor.rotate(0,true);
+
+	}
+
+
+	public void rotateClockwise(){ //le robot fait un tour sur lui même dans le sens des aiguilles
+		mLeftMotor.forward();
+		mRightMotor.backward();
+	}
+
+
+	public void rotateCounterClockwise(){ //le robot fait un tour sur lui même dans le sens inverse des aiguilles
+		mLeftMotor.backward();
+		mRightMotor.forward();
+	}
+
+	public void demiTour() { //le robot fait une rotation à 180degres
+		mLeftMotor.setSpeed(250);
+		mRightMotor.setSpeed(250);
+		
+		mLeftMotor.rotate(790,true);
+		mRightMotor.rotate(-790,true);
+
+	}
+
+	public void pivote(int a) {
+		// le robot effectue une rotation par la droite de a degres
+		mLeftMotor.setSpeed(250);
+		mRightMotor.setSpeed(250);
+		int b=a/2;
+		mLeftMotor.rotate(a,true);
+		mRightMotor.rotate(-a,true);
+	}
+
+	public boolean isMoving() { //renvoie true si le robot est en mouvement, false sinon
+		if(this.mLeftMotor.isMoving()==true && this.mRightMotor.isMoving()==true)
+			return true;
+		return false;
+	}
+
+	public void recule() { //le robot recule pendant un certain temps (delay à modifier)
+		mLeftMotor.setSpeed(SPEED);
+		mRightMotor.setSpeed(SPEED);
+		
 		mLeftMotor.backward();
 		mRightMotor.backward();
 		Delay.msDelay(3000);
 		stop();
 	}
-	
-	
-	public void stop(){
-		mLeftMotor.stop();
-		mRightMotor.stop();
 
-	}
-
-
-	public void rotateClockwise(){
-		mLeftMotor.forward();
-		mRightMotor.backward();
-	}
-
-
-	public void rotateCounterClockwise(){
-		mLeftMotor.backward();
-		mRightMotor.forward();
-	}
-
-	public void demiTour() {
-		mLeftMotor.rotate(790,true);
-		mRightMotor.rotate(-790,true);
-
+	public void esquive() { //esquive un obstacle
+		//stop();
+		pivote(100);
+		Delay.msDelay(1000);
+		forward();
+		Delay.msDelay(2000);
+		pivote(-80);
+		Delay.msDelay(1000);
 	}
 	
-	public void pivote(int a) {
-		int b=a/2;
-		mLeftMotor.rotate(b,true);
-		mRightMotor.rotate(-b,true);
-	}
 	
-	public boolean isMoving() {
-		if(this.mLeftMotor.isMoving()==true && this.mRightMotor.isMoving()==true)
-			return true;
-		return false;
+	public static void main(String[] args) {
+		DifferentialDrive m = new DifferentialDrive(MotorPort.A,MotorPort.B);
+		//m.demiTour();
+		//m.pivote(790);
+		Delay.msDelay(6000);
 	}
-	
 }
+
