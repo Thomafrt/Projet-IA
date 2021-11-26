@@ -9,6 +9,7 @@ public class DifferentialDrive {
 	public EV3LargeRegulatedMotor mRightMotor;
 
 	private final static int SPEED = 500;
+	private final static int SPEED1 = 250;
 
 
 
@@ -29,8 +30,8 @@ public class DifferentialDrive {
 
 	public void stop(){ //arrête le robot
 		System.out.println("stop");
-		mLeftMotor.rotate(0,true);
-		mRightMotor.rotate(0,true);
+		mLeftMotor.rotate(10,true);
+		mRightMotor.rotate(10,true);
 
 	}
 
@@ -47,14 +48,24 @@ public class DifferentialDrive {
 	}
 
 	public void demiTour() { //le robot fait une rotation à 180degres
+		mLeftMotor.setSpeed(SPEED1);
+		mRightMotor.setSpeed(SPEED1);
 		System.out.println("tour sur lui meme");	
 		mLeftMotor.rotate(810,true);
 		mRightMotor.rotate(-810,true);
 
 	}
+	
+	public void vitesse() {
+		mLeftMotor.setSpeed(SPEED);
+		mRightMotor.setSpeed(SPEED);
+	}
 
 	public void pivote(int a) {
 		// le robot effectue une rotation par la droite de a degres
+		mLeftMotor.setSpeed(SPEED1);
+		mRightMotor.setSpeed(SPEED1);
+		
 		mLeftMotor.rotate(a,true);
 		mRightMotor.rotate(-a,true);
 	}
@@ -78,9 +89,9 @@ public class DifferentialDrive {
 		//stop();
 		System.out.println("esquive");
 		pivote(100);
-		Delay.msDelay(1000);
+		Delay.msDelay(400);
 		forward();
-		Delay.msDelay(2000);
+		Delay.msDelay(500);
 		pivote(-80);
 	}
 }
