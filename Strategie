@@ -1,3 +1,4 @@
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ public class Strategie{
 	Pince p;
 	ColorSensor c;
 	private int angle;
+
 
 	public Strategie() {
 		t = new TouchSensor(SensorPort.S4);
@@ -41,7 +43,7 @@ public class Strategie{
 			Delay.msDelay(1000);
 			System.out.println("Mode : Ramene le premier palet");
 			m.esquive();
-			Delay.msDelay(4000);
+			Delay.msDelay(2000);
 
 			while(c.getColorID()!= 6) { //tant qu'on ne détecte pas de blanc
 				m.forward();
@@ -56,6 +58,7 @@ public class Strategie{
 
 	public void detecte() { //le robot fait un tour sur lui même pour detecter le palet le plus proche et se place face à lui
 		System.out.println("Mode : Detection du palet le plus proche");
+
 		List <Float> liste= new ArrayList<Float> ();
 		m.demiTour();
 
@@ -78,21 +81,21 @@ public class Strategie{
 			}
 		}
 		angle=(int) (1050/liste.size()*indice);
-
+		m.vitesse();
 		m.pivote(angle);
+
 		Delay.msDelay(3000);
 		System.out.println("angle :"+angle);
 		System.out.println("valeur :"+val);
 		System.out.println("liste :"+liste.size());
 
-		//vaChercher();
-		Delay.msDelay(10000);
+		vaChercher();
+		//		Delay.msDelay(10000);
 	}
 
 	public void vaChercher() {
 		//le robot avance vers l'objet détecté en ouvrant les pinces, si c'est un palet il lattrappe se remet face au but adverse
 		//sinon repasse en mode detection
-		p.open();
 		System.out.println("Mode : Cherche le palet");
 		List <Float> liste= new ArrayList<Float> ();
 		float v=0;
@@ -100,15 +103,26 @@ public class Strategie{
 
 		m.forward();
 		while(m.isMoving()==true) { //tant que le robot avance
+			p.open();
 
 			float i = uS.getDistance();
 			if(i>0.3){// si on ne detetecte pas de mur ni de valeur infini
-				System.out.println(i);
+				//System.out.println(i);
 				liste.add(i);
 				float val1=liste.get(0);
 				float val2=liste.get(1);
-				if(val1-val2>0) { //on détecte un palet (il y a un saut dans les valeurs)
-					if (t.isPressed()){ //si le touch est touché
+				if( t.isPressed() || val1-val2>0 ) { //on détecte un palet (il y a un saut dans les valeurs)
+
+					if (t.isPressed()) {
+						//si le touch est touché
+
+						angle=-angle;
+						m.pivote(angle);
+						Delay.msDelay(3000);
+
+
+						angle=0;
+
 						m.stop();
 						p.close();
 						vaMarquer();
@@ -117,18 +131,30 @@ public class Strategie{
 			}
 			else {
 				m.stop(); //sinon on s'arrete et on s'écarte et repasse en detection
-				Delay.msDelay(5000);
+				p.close();
+				Delay.msDelay(1000);
 
-				apres();
+				angle=-angle;
+				m.pivote(angle);
+				Delay.msDelay(3000);
+
+				angle=0;
+				//TODO
+
+				detecte();
 			}
 		}
 	}
 
 	public void vaMarquer() { //amène le palet derriere la ligne, puis se replace au centre du plateau et recherche un palet
 		System.out.println("Mode : Marquer un but");
-		int tourne=1600-angle;
-		m.pivote(tourne);
+
+		angle=-angle;
+		m.pivote(angle);
+		Delay.msDelay(3000);
+		m.vitesse();
 		m.forward();
+		angle=0;
 		while(c.getColorID()!= 6) { //tant qu'on ne détecte pas de blanc
 			m.forward();
 		}
@@ -151,25 +177,38 @@ public class Strategie{
 	}
 
 	public void izi() {
-		p.open();
+		//	p.open();
 		p.close();
+		//	m.forward();
+		//	Delay.msDelay(100);
+		//	m.stop();
+		//	m.esquive();
 	}
 
 
 	public static void main(String[] args) {
 		Strategie s=new Strategie();
+		//p.c();
 		//s.premierPalet();
 		//s.izi();
-		//s.run();
-		//Pince p = new Pince (MotorPort.C);
-		//p.close();
+		s.run();
 		//DifferentialDrive m2 = new DifferentialDrive(MotorPort.A,MotorPort.B);
-		s.detecte();
+		//s.detecte();
 		//s.vaChercher();
 		//m2.demiTour();
+
+
+
+		/*		Pince p=new Pince(MotorPort.C);
+		//Pince p = new Pince (MotorPort.C);
+		//p.close();
+
+		Delay.msDelay(3000);
+		 */
 
 
 
 	}
 
 }
+
