@@ -29,9 +29,9 @@ public class DifferentialDrive {
 	}
 
 	public void stop(){ //arrête le robot
-		System.out.println("stop");
-		mLeftMotor.rotate(10,true);
-		mRightMotor.rotate(10,true);
+		System.out.println("Stop");
+		mLeftMotor.rotate(0,true);
+		mRightMotor.rotate(0,true);
 
 	}
 
@@ -86,12 +86,12 @@ public class DifferentialDrive {
 	}
 
 	public void esquive() { //esquive un obstacle
-		//stop();
-		System.out.println("esquive");
+		System.out.println("Esquive");
 		pivote(100);
-		Delay.msDelay(400);
+		Delay.msDelay(500);
 		forward();
 		Delay.msDelay(500);
-		pivote(-80);
+		pivote(-100);
+		Delay.msDelay(500);
 	}
 }
