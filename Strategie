@@ -31,23 +31,22 @@ public class Strategie{
 		System.out.println("Mode : Recherche du premier palet");
 		int i=0;
 		while(i<1) { //tant que i inférieur à 1
-			p.open();
-			Delay.msDelay(1000);
+
 			while (! t.isPressed()){ //tant que le touch nest pas touché
 				m.forward();
-				System.out.println("cherche palet");
+				if(m.isMoving())  //ouvre les pinces lorsque le robot avance
+					p.open();
 			}
 			m.stop();
 			Delay.msDelay(1000);
 			p.close();
 			Delay.msDelay(1000);
-			System.out.println("Mode : Ramene le premier palet");
+			System.out.println("Ramene le premier palet");
 			m.esquive();
-			Delay.msDelay(2000);
-
+			//Delay.msDelay(3000);
+			System.out.println("Détection ligne blanche...");
 			while(c.getColorID()!= 6) { //tant qu'on ne détecte pas de blanc
 				m.forward();
-				System.out.println("blanc");
 			}
 			m.stop();
 			p.open();
@@ -73,7 +72,7 @@ public class Strategie{
 		float val=1000;
 
 		for(int i=0; i<liste.size()-1;i++) { //tant qu'on a pas parcouru toute la liste
-			float diff=liste.get(i)-liste.get(i+1);
+			//float diff=liste.get(i)-liste.get(i+1);
 
 			if (liste.get(i)>0.35 && liste.get(i)<val) { //si l'indice i est supp à 0.3 ET inférieur à val et pas de val infini
 				val=liste.get(i);						         // et que la diff ? && (diff>0.2 || diff<-0.2) et  && i != Float.POSITIVE_INFINITY
@@ -81,22 +80,22 @@ public class Strategie{
 			}
 		}
 		angle=(int) (1050/liste.size()*indice);
+
 		m.vitesse();
 		m.pivote(angle);
 
 		Delay.msDelay(3000);
-		System.out.println("angle :"+angle);
-		System.out.println("valeur :"+val);
-		System.out.println("liste :"+liste.size());
+		//System.out.println("angle :"+angle);
+		//System.out.println("valeur :"+val);
+		//System.out.println("liste :"+liste.size());
 
 		vaChercher();
-		//		Delay.msDelay(10000);
 	}
 
 	public void vaChercher() {
 		//le robot avance vers l'objet détecté en ouvrant les pinces, si c'est un palet il lattrappe se remet face au but adverse
 		//sinon repasse en mode detection
-		System.out.println("Mode : Cherche le palet");
+		System.out.println("Mode : Recuperer le palet");
 		List <Float> liste= new ArrayList<Float> ();
 		float v=0;
 		liste.add(v);
@@ -115,14 +114,6 @@ public class Strategie{
 
 					if (t.isPressed()) {
 						//si le touch est touché
-
-						angle=-angle;
-						m.pivote(angle);
-						Delay.msDelay(3000);
-
-
-						angle=0;
-
 						m.stop();
 						p.close();
 						vaMarquer();
@@ -133,27 +124,26 @@ public class Strategie{
 				m.stop(); //sinon on s'arrete et on s'écarte et repasse en detection
 				p.close();
 				Delay.msDelay(1000);
-
+				//TODO reculer pour se centrer
 				angle=-angle;
 				m.pivote(angle);
 				Delay.msDelay(3000);
 
 				angle=0;
-				//TODO
-
 				detecte();
 			}
 		}
 	}
 
 	public void vaMarquer() { //amène le palet derriere la ligne, puis se replace au centre du plateau et recherche un palet
-		System.out.println("Mode : Marquer un but");
-
+		System.out.println("Mode : Marquer un point");
+		//TODO reculer pour se centrer
 		angle=-angle;
+		System.out.println(angle);
 		m.pivote(angle);
 		Delay.msDelay(3000);
 		m.vitesse();
-		m.forward();
+		//m.forward();
 		angle=0;
 		while(c.getColorID()!= 6) { //tant qu'on ne détecte pas de blanc
 			m.forward();
@@ -164,14 +154,14 @@ public class Strategie{
 	}
 
 	public void apres() { //se replace au centre du plateau et recherche un palet
-		System.out.println("apres");
+		System.out.println("Replacement");
 		m.recule();
 		p.close();
 		detecte();		
 	}
 
 	public void run() { //Lance le programme apres avoir pressé un bouton
-		System.out.println("Appuyez pour lancer le robot");
+		System.out.println("Pressez un bouton pour lancer le robot");
 		Button.waitForAnyPress();
 		premierPalet();
 	}
@@ -195,7 +185,8 @@ public class Strategie{
 		//DifferentialDrive m2 = new DifferentialDrive(MotorPort.A,MotorPort.B);
 		//s.detecte();
 		//s.vaChercher();
-		//m2.demiTour();
+		//m2.pivote(-500);
+		//Delay.msDelay(10000);
 
 
 
@@ -205,10 +196,5 @@ public class Strategie{
 
 		Delay.msDelay(3000);
 		 */
-
-
-
 	}
-
 }
-
