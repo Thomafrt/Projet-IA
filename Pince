@@ -5,22 +5,36 @@ import lejos.utility.Delay;
 public class Pince {
 
 	public EV3MediumRegulatedMotor m;
-
-	private final static int SPEED = 100;
-
+	private boolean ouvert=false;
 
 	public Pince(Port port) {
 		m = new EV3MediumRegulatedMotor(port);
 		m.setSpeed(1080);
+		boolean ouvert=false;
 	}
 
 	public void open() {
-		System.out.println("ouvre");
-		m.rotate(1300);
+		if (ouvert==false) {
+			m.rotate(1300);
+			ouvert=true;
+			System.out.println("ouvre");
+		}
+	}
+
+	public void close() {
+		if (ouvert==true) {
+			m.rotate(-1300);
+			ouvert=false;
+			System.out.println("ferme");
+		}
 	}
 	
-	public void close() {
-		m.rotate(-1300);
-		System.out.println("ferme");
+	public void o() {
+		m.rotate(400);
+	}
+	
+	
+	public void c() {
+		m.rotate(-2000);
 	}
 }
