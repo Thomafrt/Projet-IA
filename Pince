@@ -17,7 +17,7 @@ public class Pince {
 		if (ouvert==false) {
 			m.rotate(1300);
 			ouvert=true;
-			System.out.println("ouvre");
+			System.out.println("Ouverture pince");
 		}
 	}
 
@@ -25,7 +25,7 @@ public class Pince {
 		if (ouvert==true) {
 			m.rotate(-1300);
 			ouvert=false;
-			System.out.println("ferme");
+			System.out.println("Fermeture pince");
 		}
 	}
 	
